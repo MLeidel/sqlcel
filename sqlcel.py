@@ -1,9 +1,6 @@
 '''
 sqlcel.py
-"SequelCell"
 Michael Leidel Nov 2020
-needs xlrd module also
-Aug 15, 2021 - added datecols; section
 
 
 ███████  ██████  ██       ██████ ███████ ██
@@ -60,6 +57,7 @@ tbl_info = ""
 SQL_file = ""
 RUN_CONSOLE = False
 DF = 0  # copy of displayed df. Used by launch_plotter
+t = None
 
 def edit_check():
     ''' Prompting to leave unsaved edits
@@ -220,9 +218,9 @@ def df_info_view():
     if tbl_info == "":  # may be empty if no SQL was run yet
         return
 
-    t = Toplevel()
-    t.wm_title("Info")
-    L = Label(t)
+    tl = Toplevel()
+    tl.wm_title("Info")
+    L = Label(tl)
     L.pack(side="top", fill="both", expand=True, padx=5, pady=5)
     L['text'] = tbl_info
 
@@ -333,7 +331,7 @@ def create_df(filename, n, dates):
             df = pd.read_csv(filename, parse_dates=dates, encoding='utf-8')
             df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
         else:
-            engine = create_engine('sqlite:///' + filename, echo=False, encoding = 'utf-8')
+            engine = create_engine('sqlite:///' + filename, echo=False, encoding='utf-8')
             conn = engine.connect()
             df = pd.read_sql_table(n, conn, parse_dates=dates)
             conn.close()
@@ -496,7 +494,7 @@ def exec_sql(sql):
 
         if ln.lower() == "datecols;":
             parser = 10
-            continue;
+            continue
 
         if parser == 10:
             datelist = ln.split(',')  # dates,dates,... to List
@@ -515,11 +513,11 @@ def exec_sql(sql):
         return
 
     if datelist == None:  # No date cols declared in the code file
-        datalist = True
+        datelist = True
 
     # CONNECT DATAFRAMES TO SQL ENGINE, CREATE TABLES AND EXECUTE SQL
 
-    engine = create_engine('sqlite://', echo=False, encoding = 'utf-8')
+    engine = create_engine('sqlite://', echo=False, encoding='utf-8')
 
     cols = between(sql_code, "select ", " from ")
     scols = ""
@@ -582,7 +580,7 @@ def exec_sql(sql):
         elif outpath.lower().endswith("csv"):
             final.to_csv(outpath, index=False)
         else:  # assuming sqlite then
-            e = create_engine('sqlite:///' + outpath, echo=False, encoding = 'utf-8')
+            e = create_engine('sqlite:///' + outpath, echo=False, encoding='utf-8')
             conn = e.connect()
             final.to_sql('table1', conn, if_exists='replace')
             conn.close()
@@ -649,7 +647,7 @@ def pop2func(n):
         select_all()
 
 def highlite():
-    '''  '''
+    ''' highlight code '''
     global t
     highlight_pattern(r'^[IiSsOoDd].*;\n', "sections", regexp=True)
     highlight_pattern(r"(\d+|\d\.\d|\.\d)", "numbers", regexp=True)
@@ -661,6 +659,7 @@ def highlite():
     t.start()
 
 def highlight_pattern(pattern, tag, start="1.0", end="end", regexp=False):
+    ''' highlight code '''
     start = code.index(start)
     end = code.index(end)
     code.tag_remove(tag, start, end)
@@ -669,20 +668,24 @@ def highlight_pattern(pattern, tag, start="1.0", end="end", regexp=False):
     code.mark_set("searchLimit", end)
     count = IntVar()
     while True:
-        index = code.search(pattern, "matchEnd","searchLimit",
+        index = code.search(pattern, "matchEnd", "searchLimit",
                             count=count, regexp=True)
-        if index == "": break
-        if count.get() == 0: break # degenerate pattern which matches zero-length strings
+        if index == "":
+            break
+        if count.get() == 0:
+            break # degenerate pattern which matches zero-length strings
         code.mark_set("matchStart", index)
         code.mark_set("matchEnd", "%s+%sc" % (index, count.get()))
         code.tag_add(tag, "matchStart", "matchEnd")
 
 def enlarge_code_frame():
+    ''' verticle length increase '''
     h = code.cget("height")
     h += 2
     code.config(height=h)
 
 def shrink_code_frame():
+    ''' verticle length decrease '''
     h = code.cget("height")
     if h > 10:
         h -= 2
