@@ -204,7 +204,7 @@ def df_info_view():
                 # df = pd.read_sql_table('snippet', conn, parse_dates=True)
                 # conn.close()
 
-            df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+            df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('-', '_').str.replace('(', '').str.replace(')', '')
             data_top = df.head()
             # display
             txt.insert(END, data_top)
@@ -326,10 +326,10 @@ def create_df(filename, n, dates):
                 df = pd.read_excel(filename, sheet_name=int(n), parse_dates=dates)  # , parse_dates=True
             else:
                 df = pd.read_excel(filename, sheet_name=n, parse_dates=dates)
-            df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+            df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('-', '_').str.replace('(', '').str.replace(')', '')
         elif filename.endswith('csv'):
             df = pd.read_csv(filename, parse_dates=dates, encoding='utf-8')
-            df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+            df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('-', '_').str.replace('(', '').str.replace(')', '')
         else:
             engine = create_engine('sqlite:///' + filename, echo=False, encoding='utf-8')
             conn = engine.connect()
@@ -420,7 +420,7 @@ def processCodeFile(e=None):
                 else:
                     route_msg("Invalid Selection", "Preview only CSV and XLS(X) files", "error")
                     return  # preview of Sqlite is not implemented
-                df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+                df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('-', '_').str.replace('(', '').str.replace(')', '')
                 # display the whole table (df)
                 txt.insert(END, df)
                 txt.insert(END, "\n")
