@@ -11,4 +11,4 @@ Make charts
 
 _Still in testing_
 
-see `sequelcell.pdf` for details.
+see `sqlcel_doc.pdf` for details.
