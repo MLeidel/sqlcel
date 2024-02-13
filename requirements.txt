@@ -1,0 +1,7 @@
+ttkthemes
+sqlalchemy
+matplotlib
+pandas
+xlrd
+openpyxl
+lxml
