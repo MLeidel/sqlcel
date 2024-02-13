@@ -10,5 +10,6 @@ Output to spreadsheets, csv files, and Sqlite databases
 Make charts
 
 
-see `sqlcel_doc.pdf` for details.
+see `sqlcel_doc.pdf` for details
+
 see https://michaelleidel.net/sqlcel for example downloads
