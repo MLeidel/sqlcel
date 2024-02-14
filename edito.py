@@ -10,7 +10,9 @@ use:
 '''
 from tkinter import *
 from tkinter.ttk import *  # defaults all widgets as ttk
+from tkinter import messagebox
 import os, sys
+import iniproc  # ini file reader module (local)
 from tkinter.font import Font
 from ttkthemes import ThemedTk  # ttkthemes is applied to all widgets
 from tkinter import messagebox
@@ -29,14 +31,15 @@ class Application(Frame):
         self.rowconfigure(1, weight=1, pad=20)
         root.geometry("430x300+100+100")
 
-        self.txt = Text(self, padx=5)
+        self.txt = Text(self, padx=5, bg=bg_, fg=fg_)
         self.txt.grid(row=1, column=1, sticky='ewns')
-        efont = Font(family="Consolas", size=10)
+        efont = Font(family=font_, size=size_)
         self.txt.configure(font=efont)
         self.txt.config(wrap = NONE, # wrap = NONE
                undo = True, # Tk 8.4
                width = 40,
                height= 12,
+               insertbackground=cursor_,
                tabs = (efont.measure(' ' * 4),))
         self.txt.focus()
 
@@ -68,7 +71,19 @@ class Application(Frame):
         text = self.txt.get("1.0", END).strip() + "\n"
         with open(sys.argv[1], "w") as fh:
             fh.write(text)
+        messagebox.showinfo("Alert!", "Restart sqlcel.py for changes to take effect.")
         root.destroy()
+
+
+# get sqlcel.ini values
+fg_, bg_, font_, size_, cursor_, wtheme_ = iniproc.read("sqlcel.ini",
+                                                'Foreg',
+                                                'Backg',
+                                                'Font',
+                                                'Size',
+                                                'Cursor',
+                                                'WinTheme'
+                                                )
 
 # ttkthemes
 # 'alt', 'scidsand', 'classic', 'scidblue',
@@ -76,7 +91,7 @@ class Application(Frame):
 # 'arc', 'scidgrey', 'scidpurple', 'clam', 'smog'
 # 'kroc', 'black', 'clearlooks'
 # 'radiance', 'blue' : https://wiki.tcl-lang.org/page/List+of+ttk+Themes
-root = ThemedTk(theme="scidsand")
+root = ThemedTk(theme=wtheme_)
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)
