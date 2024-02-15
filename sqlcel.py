@@ -336,9 +336,9 @@ def create_df(filename, n, dates):
             if n.isnumeric():
                 # df = pd.read_excel(filename, sheet_name=int(n), parse_dates=dates)  # , parse_dates=True
                 # Load spreadsheet
-                df = pd.ExcelFile(filename).parse(sheet_name=int(n), parse_dates=True)
+                df = pd.ExcelFile(filename).parse(sheet_name=int(n), parse_dates=dates)
             else:
-                df = pd.ExcelFile(filename).parse(n, parse_dates=True)
+                df = pd.ExcelFile(filename).parse(n, parse_dates=dates)
                 print("non-numeric")
             df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('-', '_').str.replace('(', '').str.replace(')', '')
         elif filename.endswith('csv'):
