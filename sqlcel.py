@@ -1,7 +1,7 @@
 '''
 sqlcel.py
 Michael Leidel Nov 2020
-updated: Feb 2024
+updated: Feb 2024 - fix for module updates and remove ";" requirement. Added WinTheme.
 
 
 ███████  ██████  ██       ██████ ███████ ██
@@ -474,12 +474,14 @@ def exec_sql(sql):
             continue
         if ln.startswith("#"):
             continue
+        if ln[-1:] == ";":
+            ln = ln[:-1]
 
         if parser == 11:  # Sql code must be LAST in code file
             sql_code = sql_code + ln + "\n"
             continue
 
-        if ln.lower() == "output;":
+        if ln.lower() == "output":
             if outpath is not None:
                 route_msg("SQL File", "Only 1 'output;' path allowed", "error")
                 return
@@ -491,7 +493,7 @@ def exec_sql(sql):
             parser = 9
             continue
 
-        if ln.lower() == "input;":
+        if ln.lower() == "input":
             parser = 0
             continue
 
@@ -506,7 +508,7 @@ def exec_sql(sql):
                 continue
             parser += 1
 
-        if ln.lower() == "datecols;":
+        if ln.lower() == "datecols":
             parser = 10
             continue
 
@@ -515,7 +517,7 @@ def exec_sql(sql):
             parser = 9
             continue
 
-        if ln.lower() == "sql;":
+        if ln.lower() == "sql":
             parser = 11
             continue
 
@@ -524,6 +526,7 @@ def exec_sql(sql):
         return
     if not sql_code.lower().lstrip().startswith("select"):
         route_msg("SQL File", "Code missing in one or more sections.", "error")
+        print(sql_code)
         return
 
     if datelist == None:  # No date cols declared in the code file
@@ -668,7 +671,9 @@ def pop2func(n):
 def highlite():
     ''' highlight code '''
     global t
-    highlight_pattern(r'^[IiSsOoDd].*;\n', "sections", regexp=True)
+    highlight_pattern(r'^[Ss][Qq][Ll]|^[Ii][Nn][Pp][Uu][Tt]|^[Oo][Uu][Tt][Pp][Uu][Tt]|^[Dd][Aa][Tt][Ee][Cc][Oo][Ll][Ss].*\n',
+                      "sections", regexp=True)
+    #highlight_pattern(r'^[IiSsOoDd].*\n', "sections", regexp=True)
     highlight_pattern(r"(\d+|\d\.\d|\.\d)", "numbers", regexp=True)
     highlight_pattern(r"[\"\'`](.*?)[\'\"`]", "literals", regexp=True)
     highlight_pattern(r'^#.*\n', "remarks", regexp=True)
