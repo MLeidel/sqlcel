@@ -339,7 +339,6 @@ def create_df(filename, n, dates):
                 df = pd.ExcelFile(filename).parse(sheet_name=int(n), parse_dates=dates)
             else:
                 df = pd.ExcelFile(filename).parse(n, parse_dates=dates)
-                print("non-numeric")
             df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('-', '_').str.replace('(', '').str.replace(')', '')
         elif filename.endswith('csv'):
             df = pd.read_csv(filename, parse_dates=dates, encoding='utf-8')
@@ -380,6 +379,7 @@ def display_results(df):
         txt.insert("1.0", df)
         txt.insert(END, "\n")
         DF = df.copy()
+        frm_out.config(text="     SQL Output ")
 
 
 def between(s, leader, trailer):
@@ -442,6 +442,10 @@ def processCodeFile(e=None):
 
         sql = code.get("1.0", END)
 
+    if RUN_CONSOLE is False:
+        frm_out.config(text=" P r o c e s s i n g . . . ")
+        frm_out.update()
+
     exec_sql(sql)
 
 ########################################################################
@@ -451,8 +455,7 @@ def exec_sql(sql):
     Setup the spreadsheet with pandas and sqlalchemy then execute the users sql statement
     display result in GUI and optional output to excel or csv
     '''
-
-    # PARSE CODE FILE TO SETUP VARIABLE LISTS
+   # PARSE CODE FILE TO SETUP VARIABLE LISTS
 
     parser = 9  # flag for primitive parsing logic
 
@@ -616,6 +619,7 @@ def route_msg(title, text, typ):
         logging.debug(title + " - " + str(text))
         return
 
+    frm_out.config(text="     SQL Output ")
     if typ == "error":
         messagebox.showerror(title, text)
     elif typ == "warning":
