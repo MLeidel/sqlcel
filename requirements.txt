@@ -5,3 +5,4 @@ pandas
 xlrd
 openpyxl
 lxml
+pyarrow
