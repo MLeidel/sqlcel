@@ -18,6 +18,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 import os, io, sys
 import logging
+import platform
 import threading
 import subprocess
 from ttkthemes import ThemedTk  # ttkthemes applied to all widgets
@@ -28,11 +29,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import iniproc  # ini file reader module (local)
 
-#   OS
-#   Linux
-PYTHON = "python3"
-#   Windows
-# PYTHON = "pythonw.exe"
+
+if platform.system() == "Windows":
+    PYTHON = "pythonw.exe"
+else:
+    PYTHON = "python3"
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)
@@ -725,7 +726,7 @@ def new_code_file():
     SQL_file = ""
     code.delete("1.0", END) # clear the Text widget
 
-def edit_ini(e):
+def edit_ini():
     '''
     this will have to change for hosting OS
     '''
@@ -812,6 +813,9 @@ btn.grid(row=2, column=1, sticky='we')
 btn = Button(control_frame, text='X', width=2,
                       command=new_code_file)
 btn.grid(row=3, column=1, sticky='we')
+btn = Button(control_frame, text='*', width=2,
+                      command=edit_ini)
+btn.grid(row=4, column=1, sticky='we')
 
 splash = '''Welcome to SequelCell 2.2
 Begin coding a query here Or Open an existing query
@@ -824,7 +828,6 @@ Begin coding a query here Or Open an existing query
     Control-e   Execute
     Control-o   Open Sql File
     Control-i   Insert Data Source
-    F7          Settings Editor
 '''
 code.delete("1.0", END) # clear the Text widget
 code.insert(END, splash) # insert the text
@@ -925,7 +928,6 @@ root.bind('<Escape>', quit_sql)
 root.bind('<Control-e>', processCodeFile)
 root.bind('<Control-o>', open_sql)
 root.bind('<Control-i>', add_df_src)
-root.bind('<F7>', edit_ini)
 
 
 # Restore App to last position on user screen
