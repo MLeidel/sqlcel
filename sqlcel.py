@@ -143,7 +143,7 @@ def add_df_src(event=None):
                                               ("CSV text", "*.csv"),
                                               ("Sqlite", "*.*")))
     if f:
-        new_code = "Input;\n" + f + "\n0\ntbl\n\n"
+        new_code = "Input\n" + f + "\n0\ntbl\n\n"
         inx = code.index(INSERT)
         code.insert(inx, new_code)
         code.focus()
