@@ -195,6 +195,8 @@ def df_info_view():
         code.tag_remove(SEL, "1.0", END)  # remove selection
         if len(tsel) > 4:
             # just the path or path & table name ?
+            frm_out.config(text=" P r o c e s s i n g . . . ")
+            frm_out.update()
             if "\n" in tsel:
                 lst = tsel.split("\n")
                 tsel = lst[0]   # this is the fullpath
@@ -224,6 +226,8 @@ def df_info_view():
             txt.insert(END, "\n")
             txt.insert(END, str(df.shape))
             txt.insert(END, "\n")
+            frm_out.config(text="     SQL Output ")
+            frm_out.update()
             return  # that's it, leave this method
     except:
         pass
